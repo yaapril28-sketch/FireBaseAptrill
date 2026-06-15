@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+body {
+  background-color: #050608;
+  color: #e2e8f0;
+}
+
+/* Custom Neon Styles matching Sophisticated Dark Spec */
+.neon-text-cyan { 
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.7); 
+}
+
+.neon-text-magenta { 
+  text-shadow: 0 0 10px rgba(255, 0, 255, 0.7); 
+}
+
+.neon-border-cyan { 
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.15), inset 0 0 5px rgba(0, 243, 255, 0.08); 
+  border: 1px solid rgba(0, 243, 255, 0.4); 
+}
+
+.neon-border-magenta { 
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.15), inset 0 0 5px rgba(255, 0, 255, 0.08); 
+  border: 1px solid rgba(255, 0, 255, 0.4); 
+}
+
+.glass-panel { 
+  background: rgba(15, 18, 24, 0.8) !important; 
+  backdrop-filter: blur(12px) !important; 
+  border: 1px solid rgba(255, 255, 255, 0.05) !important; 
+}
+
+.active-glow { 
+  background: radial-gradient(circle at center, rgba(0, 243, 255, 0.15) 0%, transparent 70%); 
+}
+
+.active-glow-magenta { 
+  background: radial-gradient(circle at center, rgba(255, 0, 255, 0.15) 0%, transparent 70%); 
+}
+
+@keyframes pulse-slow { 
+  0%, 100% { opacity: 1; } 
+  50% { opacity: 0.5; } 
+}
+
+.animate-pulse-slow { 
+  animation: pulse-slow 3s infinite; 
+}
+

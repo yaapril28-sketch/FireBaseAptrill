@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Home IoT Realtime Dashboard</title>
+  
+  <!-- Font Google untuk kesan Futuristik & Modern -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Montserrat:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Icon Lucide (Melalui CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- File Style CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Loading Animation saat halaman pertama kali dibuka -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loader-container">
+      <div class="neon-ring"></div>
+      <div class="neon-ring ring-reverse"></div>
+      <div class="loader-text font-orbitron">IOT SYSTEM STARTING...</div>
+    </div>
+  </div>
+
+  <!-- Header Dashboard -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="logo-icon pulsing-glow">
+        <i data-lucide="cpu"></i>
+      </div>
+      <div>
+        <h1 class="logo-title font-orbitron text-glow-cyan">NEXUS <span class="accent-text-violet">HOME</span></h1>
+        <p class="logo-subtitle">SMART IoT CONTROL SYSTEM</p>
+      </div>
+    </div>
+    
+    <!-- Info Jam & Status Koneksi -->
+    <div class="header-info">
+      <!-- Digital Clock -->
+      <div class="clock-card">
+        <div id="digital-clock" class="digital-clock font-mono">00:00:00</div>
+        <div id="current-date" class="current-date">Minggu, 14 Juni 2026</div>
+      </div>
+      
+      <!-- System Connection Badges -->
+      <div class="status-indicators">
+        <div class="status-badge" id="firebase-status">
+          <span class="indicator-dot bg-amber"></span>
+          <span class="status-label font-orbitron">FIREBASE: MENGHUBUNGKAN...</span>
+        </div>
+        <div class="status-badge" id="network-status">
+          <span class="indicator-dot bg-green"></span>
+          <span class="status-label font-orbitron">SYSTEM: ONLINE</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Container Utama -->
+  <main class="dashboard-container">
+
+    <!-- BARIS KIRI: SENSOR MONITORING & VOICE COMMAND -->
+    <div class="sidebar-column">
+      
+      <!-- CARD 1: MONITORING SUHU & KELEMBABAN -->
+      <section class="dashboard-card glow-cyan">
+        <div class="card-header">
+          <i data-lucide="thermometer" class="icon-cyan"></i>
+          <h2 class="card-title font-orbitron">MONITORING SENSOR</h2>
+        </div>
+        <div class="sensor-grid">
+          <!-- Temp Gauge -->
+          <div class="sensor-dial-box">
+            <div class="gauge-ring" style="--gauge-color: var(--accent-orange); --gauge-glow: rgba(249, 115, 22, 0.4);">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" class="gauge-bg"></circle>
+                <circle cx="50" cy="50" r="42" class="gauge-progress" id="temp-gauge-circle" stroke-dasharray="264" stroke-dashoffset="132"></circle>
+              </svg>
+              <div class="gauge-value font-orbitron">
+                <span id="temp-value" class="text-orange">0.0</span><span class="unit text-orange">°C</span>
+              </div>
+            </div>
+            <div class="sensor-label font-orbitron">SUHU RUANGAN</div>
+            <div class="sensor-status font-mono text-orange" id="temp-indicator font-mono">NORMAL</div>
+          </div>
+          
+          <!-- Humidity Gauge -->
+          <div class="sensor-dial-box">
+            <div class="gauge-ring" style="--gauge-color: var(--accent-cyan); --gauge-glow: rgba(6, 182, 212, 0.4);">
+              <svg viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" class="gauge-bg"></circle>
+                <circle cx="50" cy="50" r="42" class="gauge-progress" id="humi-gauge-circle" stroke-dasharray="264" stroke-dashoffset="150"></circle>
+              </svg>
+              <div class="gauge-value font-orbitron">
+                <span id="humi-value" class="text-cyan">0</span><span class="unit text-cyan">%</span>
+              </div>
+            </div>
+            <div class="sensor-label font-orbitron">KELEMBABAN</div>
+            <div class="sensor-status font-mono text-cyan" id="humi-indicator font-mono">IDEAL</div>
+          </div>
+        </div>
+
+        <!-- Slider Simulator Data (Sangat berguna untuk demo presentasi!) -->
+        <div class="simulation-panel">
+          <div class="sim-header font-orbitron">
+            <span>HARDWARE SIMULATOR</span>
+            <span class="badge">PRESENTER DEMO</span>
+          </div>
+          <p class="sim-desc">Gunakan slider untuk mensimulasikan data sensor DHT11/DHT22 ke Firebase Database.</p>
+          <div class="sim-control-group">
+            <div class="sim-row">
+              <label for="sim-temp-slider" class="font-mono">Suhu (°C): <span id="sim-temp-text" class="text-orange">30.0</span></label>
+              <input type="range" id="sim-temp-slider" min="0" max="60" step="0.5" value="30.0" class="neon-slider-orange">
+            </div>
+            <div class="sim-row">
+              <label for="sim-humi-slider" class="font-mono">Kelembaban (%): <span id="sim-humi-text" class="text-cyan">60</span></label>
+              <input type="range" id="sim-humi-slider" min="10" max="99" step="1" value="60" class="neon-slider-cyan">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARD 2: VOICE COMMAND (WEB SPEECH API) -->
+      <section class="dashboard-card glow-violet">
+        <div class="card-header">
+          <i data-lucide="mic" class="icon-violet"></i>
+          <h2 class="card-title font-orbitron">VOICE COMMAND</h2>
+          <span class="badge-accent font-orbitron">WEB SPEECH API</span>
+        </div>
+        
+        <div class="voice-assistant-box">
+          <div class="voice-mic-container">
+            <button id="btn-voice-toggle" class="btn-voice pulsing-glow-violet" title="Klik untuk bicara">
+              <i data-lucide="mic" id="mic-icon"></i>
+            </button>
+            <div class="voice-waves" id="voice-waves">
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+            </div>
+          </div>
+          
+          <div class="voice-instruction-hint font-orbitron text-violet">
+            STATUS: <span id="voice-status">SIAP TERIMA PERINTAH</span>
+          </div>
+
+          <div class="voice-text-box">
+            <div class="label-box font-mono text-gray">KATA YANG TERDETEKSI:</div>
+            <p id="voice-transcript" class="transcript-placeholder font-mono text-glow-cyan">"Klik tombol mikrofon di atas lalu berikan perintah..."</p>
+          </div>
+          
+          <!-- Petunjuk Perintah Suara -->
+          <div class="commands-cheat-sheet">
+            <div class="commands-title font-orbitron">CONTOH PERINTAH SUARA (ID / EN)</div>
+            <ul class="commands-list font-mono">
+              <li>"Nyalakan lampu 1" / "Turn on lamp 1"</li>
+              <li>"Matikan lampu 2" / "Turn off lamp 2"</li>
+              <li>"Nyalakan semua lampu" / "Turn on all lights"</li>
+              <li>"Matikan semua lampu" / "Turn off all lights"</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- BARIS KANAN: RELAY CONTROLLERS & HISTORY LOGS -->
+    <div class="main-column">
+      
+      <!-- CARD 3: 4 CHANNEL SWITCH CONTROLLER -->
+      <section class="dashboard-card glow-violet grow-height">
+        <div class="card-header flex-between">
+          <div class="header-left">
+            <i data-lucide="power" class="icon-violet"></i>
+            <h2 class="card-title font-orbitron">RELAY ACTUATORS CONTROL</h2>
+          </div>
+          <!-- Master Switch -->
+          <div class="master-switch-box">
+            <button class="btn-master" id="btn-all-on font-orbitron">SEMUA ON</button>
+            <button class="btn-master btn-off" id="btn-all-off font-orbitron">SEMUA OFF</button>
+          </div>
+        </div>
+
+        <!-- Grid 4 Relay Actuator -->
+        <div class="relay-grid">
+          
+          <!-- Relay Card 1 -->
+          <div class="relay-card" id="card-relay-1">
+            <div class="relay-indicator-header">
+              <span class="relay-badge font-orbitron">RELAY 1</span>
+              <div class="status-led pointer" id="led-relay-1"></div>
+            </div>
+            
+            <div class="hardware-bulb-wrapper">
+              <div class="bulb-halo" id="halo-relay-1"></div>
+              <i data-lucide="lightbulb" class="bulb-icon text-gray" id="bulb-relay-1"></i>
+            </div>
+            
+            <div class="relay-details">
+              <div class="relay-name font-orbitron">Lampu Utama</div>
+              <p class="relay-status-text font-mono" id="text-relay-1">STATUS: MATI</p>
+            </div>
+            
+            <div class="relay-button-wrapper">
+              <button class="btn-relay btn-relay-on" id="btn-relay-1-on">ON</button>
+              <button class="btn-relay btn-relay-off active" id="btn-relay-1-off">OFF</button>
+            </div>
+          </div>
+
+          <!-- Relay Card 2 -->
+          <div class="relay-card" id="card-relay-2">
+            <div class="relay-indicator-header">
+              <span class="relay-badge font-orbitron">RELAY 2</span>
+              <div class="status-led pointer" id="led-relay-2"></div>
+            </div>
+            
+            <div class="hardware-bulb-wrapper">
+              <div class="bulb-halo" id="halo-relay-2"></div>
+              <i data-lucide="lightbulb" class="bulb-icon text-gray" id="bulb-relay-2"></i>
+            </div>
+            
+            <div class="relay-details">
+              <div class="relay-name font-orbitron">Lampu Teras</div>
+              <p class="relay-status-text font-mono" id="text-relay-2">STATUS: MATI</p>
+            </div>
+            
+            <div class="relay-button-wrapper">
+              <button class="btn-relay btn-relay-on" id="btn-relay-2-on">ON</button>
+              <button class="btn-relay btn-relay-off active" id="btn-relay-2-off">OFF</button>
+            </div>
+          </div>
+
+          <!-- Relay Card 3 -->
+          <div class="relay-card" id="card-relay-3">
+            <div class="relay-indicator-header">
+              <span class="relay-badge font-orbitron">RELAY 3</span>
+              <div class="status-led pointer" id="led-relay-3"></div>
+            </div>
+            
+            <div class="hardware-bulb-wrapper">
+              <div class="bulb-halo" id="halo-relay-3"></div>
+              <i data-lucide="lightbulb" class="bulb-icon text-gray" id="bulb-relay-3"></i>
+            </div>
+            
+            <div class="relay-details">
+              <div class="relay-name font-orbitron">Lampu Dapur</div>
+              <p class="relay-status-text font-mono" id="text-relay-3">STATUS: MATI</p>
+            </div>
+            
+            <div class="relay-button-wrapper">
+              <button class="btn-relay btn-relay-on" id="btn-relay-3-on">ON</button>
+              <button class="btn-relay btn-relay-off active" id="btn-relay-3-off">OFF</button>
+            </div>
+          </div>
+
+          <!-- Relay Card 4 -->
+          <div class="relay-card" id="card-relay-4">
+            <div class="relay-indicator-header">
+              <span class="relay-badge font-orbitron">RELAY 4</span>
+              <div class="status-led pointer" id="led-relay-4"></div>
+            </div>
+            
+            <div class="hardware-bulb-wrapper">
+              <div class="bulb-halo" id="halo-relay-4"></div>
+              <i data-lucide="lightbulb" class="bulb-icon text-gray" id="bulb-relay-4"></i>
+            </div>
+            
+            <div class="relay-details">
+              <div class="relay-name font-orbitron">Kipas Angin</div>
+              <p class="relay-status-text font-mono" id="text-relay-4">STATUS: MATI</p>
+            </div>
+            
+            <div class="relay-button-wrapper">
+              <button class="btn-relay btn-relay-on" id="btn-relay-4-on">ON</button>
+              <button class="btn-relay btn-relay-off active" id="btn-relay-4-off">OFF</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- CARD 4: SYSTEM REALTIME LOGS -->
+      <section class="dashboard-card glow-cyan">
+        <div class="card-header flex-between">
+          <div class="header-left">
+            <i data-lucide="terminal" class="icon-cyan"></i>
+            <h2 class="card-title font-orbitron">SYSTEM ACTIVITY LOG</h2>
+          </div>
+          <button class="btn-clear-logs font-mono" id="btn-clear-logs">BATALKAN LOG</button>
+        </div>
+        
+        <div class="logs-container" id="logs-container">
+          <!-- Log baris akan dimasukkan disini via JavaScript secara dinamis -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Container Toast Notification (Notifikasi Pojok Kanan Atas) -->
+  <div class="toast-wrapper" id="toast-wrapper"></div>
+
+  <!-- Footer Info -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p class="footer-text font-mono">Nexus IoT System v4.2.0 • Proyek Smart Home IoT Realtime Database</p>
+      <div class="developer-credit">Developed for College Presentation & Smart Automation Prototype</div>
+    </div>
+  </footer>
+
+  <!-- File JavaScript Config dan Logika Utama -->
+  <script type="module" src="script.js"></script>
+</body>
+</html>
