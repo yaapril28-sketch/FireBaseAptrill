@@ -206,13 +206,78 @@ export default function DashboardTab({
     let matched = false;
     let spokenResponse = "";
 
+    // Parse sensory query commands first
+    if (
+      command.includes("berapa suhu") || 
+      command.includes("cek suhu") || 
+      command.includes("suhu ruangan") || 
+      command.includes("suhu sekarang") || 
+      command.includes("room temperature") || 
+      command.includes("check temperature") || 
+      command.includes("cek temperatur") || 
+      command.includes("berapa temperatur")
+    ) {
+      if (command.includes("kelembapan") || command.includes("kelembaban") || command.includes("humidity")) {
+        spokenResponse = `Suhu ruangan saat ini adalah ${sensor.temperature} derajat celsius, dengan kelembapan ${sensor.humidity} persen.`;
+      } else {
+        spokenResponse = `Suhu ruangan saat ini adalah ${sensor.temperature} derajat celsius.`;
+      }
+      matched = true;
+    } else if (
+      command.includes("berapa kelembapan") || 
+      command.includes("berapa kelembaban") || 
+      command.includes("cek kelembapan") || 
+      command.includes("cek kelembaban") || 
+      command.includes("kelembapan ruangan") || 
+      command.includes("kelembaban ruangan") || 
+      command.includes("humidity") || 
+      command.includes("check humidity")
+    ) {
+      spokenResponse = `Kelembapan ruangan saat ini adalah ${sensor.humidity} persen.`;
+      matched = true;
+    } else if (
+      command.includes("kondisi ruangan") || 
+      command.includes("cek kondisi") || 
+      command.includes("cek semua sensor") || 
+      command.includes("status sensor")
+    ) {
+      spokenResponse = `Saat ini suhu ruangan adalah ${sensor.temperature} derajat celsius dan kelembapan ${sensor.humidity} persen.`;
+      matched = true;
+    }
+
     // Parse commands for relay actions (Indonesian & English matched)
-    if (command.includes("nyalakan lampu 1") || command.includes("hidupkan lampu 1") || command.includes("turn on lamp 1") || command.includes("lampu 1 on")) {
-      setRelayState("relay1", 1);
-      spokenResponse = "Lampu satu dinyalakan"; matched = true;
-    } else if (command.includes("matikan lampu 1") || command.includes("turn off lamp 1") || command.includes("lampu 1 off")) {
-      setRelayState("relay1", 0);
-      spokenResponse = "Lampu satu dimatikan"; matched = true;
+    if (!matched) {
+      if (
+        command.includes("nyalakan lampu 1") || 
+        command.includes("hidupkan lampu 1") || 
+        command.includes("nyalakan lampu satu") || 
+        command.includes("hidupkan lampu satu") || 
+        command.includes("nyalakan relay 1") || 
+        command.includes("hidupkan relay 1") || 
+        command.includes("nyalakan relay satu") || 
+        command.includes("hidupkan relay satu") || 
+        command.includes("turn on lamp 1") || 
+        command.includes("lampu 1 on") || 
+        command.includes("lampu satu on") || 
+        command.includes("relay 1 on") || 
+        command.includes("relay satu on")
+      ) {
+        setRelayState("relay1", 1);
+        spokenResponse = "Lampu satu dinyalakan"; matched = true;
+      } else if (
+        command.includes("matikan lampu 1") || 
+        command.includes("matikan lampu satu") || 
+        command.includes("matikan relay 1") || 
+        command.includes("matikan relay satu") || 
+        command.includes("turn off lamp 1") || 
+        command.includes("lampu 1 off") || 
+        command.includes("lampu satu off") || 
+        command.includes("relay 1 off") || 
+        command.includes("relay satu off")
+      ) {
+        setRelayState("relay1", 0);
+        spokenResponse = "Lampu satu dimatikan"; matched = true;
+      }
     }
 
     if (command.includes("nyalakan lampu 2") || command.includes("hidupkan lampu 2") || command.includes("turn on lamp 2") || command.includes("lampu 2 on")) {
@@ -492,27 +557,27 @@ export default function DashboardTab({
               <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-[9px] font-mono text-slate-500">
                 <div className="flex items-center gap-1">
                   <span className="w-1 h-1 bg-violet-400 rounded-full" />
-                  <span>"Nyalakan lampu 1"</span>
+                  <span>"Nyalakan lampu 1" / "lampu satu"</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="w-1 h-1 bg-violet-400 rounded-full" />
-                  <span>"Matikan lampu 2"</span>
+                  <span>"Matikan lampu 1" / "lampu satu"</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="w-1 h-1 bg-violet-400 rounded-full" />
-                  <span>"Nyalakan semua"</span>
+                  <span>"Berapa suhu ruangan?"</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="w-1 h-1 bg-violet-400 rounded-full" />
-                  <span>"Matikan semua"</span>
+                  <span>"Berapa kelembapan?"</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="w-1 h-1 bg-violet-400 rounded-full" />
-                  <span>"Nyalakan Pola 1"</span>
+                  <span>"Nyalakan Pola 1 / Pola 2"</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <span className="w-1 h-1 bg-violet-400 rounded-full" />
-                  <span>"Nyalakan Pola 2"</span>
+                  <span>"Matikan semua" / "Tutup pola"</span>
                 </div>
               </div>
             </div>
